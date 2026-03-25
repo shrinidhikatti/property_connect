@@ -1,0 +1,32 @@
+[Unit]
+Description=Gunicorn WSGI server for Property Connect
+After=network.target postgresql.service redis.service
+Requires=postgresql.service redis.service
+
+[Service]
+Type=notify
+User=propconnect
+Group=propconnect
+WorkingDirectory=/var/www/propconnect/backend
+EnvironmentFile=/var/www/propconnect/.env
+ExecStart=/var/www/propconnect/venv/bin/gunicorn \
+    config.wsgi:application \
+    --bind 127.0.0.1:8000 \
+    --workers 4 \
+    --worker-class sync \
+    --timeout 30 \
+    --keep-alive 5 \
+    --max-requests 1000 \
+    --max-requests-jitter 100 \
+    --access-logfile /var/log/propconnect/gunicorn-access.log \
+    --error-logfile  /var/log/propconnect/gunicorn-error.log \
+    --log-level info
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

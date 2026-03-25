@@ -1,0 +1,32 @@
+[Unit]
+Description=Celery worker for Property Connect
+After=network.target redis.service
+Requires=redis.service
+
+[Service]
+Type=forking
+User=propconnect
+Group=propconnect
+WorkingDirectory=/var/www/propconnect/backend
+EnvironmentFile=/var/www/propconnect/.env
+ExecStart=/var/www/propconnect/venv/bin/celery \
+    -A config \
+    multi start worker \
+    --loglevel=info \
+    --concurrency=4 \
+    --logfile=/var/log/propconnect/celery-worker.log \
+    --pidfile=/var/run/propconnect/celery-worker.pid
+ExecStop=/var/www/propconnect/venv/bin/celery \
+    -A config multi stopwait worker \
+    --pidfile=/var/run/propconnect/celery-worker.pid
+ExecReload=/var/www/propconnect/venv/bin/celery \
+    -A config multi restart worker \
+    --loglevel=info \
+    --concurrency=4 \
+    --logfile=/var/log/propconnect/celery-worker.log \
+    --pidfile=/var/run/propconnect/celery-worker.pid
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

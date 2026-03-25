@@ -1,0 +1,22 @@
+[Unit]
+Description=Celery Beat scheduler for Property Connect
+After=network.target redis.service celery.service
+Requires=redis.service
+
+[Service]
+Type=simple
+User=propconnect
+Group=propconnect
+WorkingDirectory=/var/www/propconnect/backend
+EnvironmentFile=/var/www/propconnect/.env
+ExecStart=/var/www/propconnect/venv/bin/celery \
+    -A config beat \
+    --loglevel=info \
+    --scheduler django_celery_beat.schedulers:DatabaseScheduler \
+    --logfile=/var/log/propconnect/celerybeat.log \
+    --pidfile=/var/run/propconnect/celerybeat.pid
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

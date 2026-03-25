@@ -1,0 +1,24 @@
+[Unit]
+Description=Daphne ASGI server for Property Connect (WebSockets)
+After=network.target postgresql.service redis.service
+Requires=postgresql.service redis.service
+
+[Service]
+Type=simple
+User=propconnect
+Group=propconnect
+WorkingDirectory=/var/www/propconnect/backend
+EnvironmentFile=/var/www/propconnect/.env
+ExecStart=/var/www/propconnect/venv/bin/daphne \
+    -b 127.0.0.1 \
+    -p 8001 \
+    --access-log /var/log/propconnect/daphne-access.log \
+    config.asgi:application
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
