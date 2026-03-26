@@ -50,6 +50,12 @@ CHANNEL_LAYERS = {
     'default': {'BACKEND': 'channels.layers.InMemoryChannelLayer'}
 }
 
+# ── Disable throttling (serverless: no shared state, Redis not guaranteed) ───
+REST_FRAMEWORK = {
+    **REST_FRAMEWORK,
+    'DEFAULT_THROTTLE_CLASSES': [],
+}
+
 # ── No SSL redirect (Vercel terminates TLS) ───────────────────────────────────
 SECURE_SSL_REDIRECT = False
 SESSION_COOKIE_SECURE = True
