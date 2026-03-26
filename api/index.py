@@ -63,6 +63,42 @@ def app(environ, start_response):
                 'detail': traceback.format_exc()
             })
 
+    # One-time: seed test users into Neon DB
+    if path == '/api/seed-users':
+        try:
+            from django.contrib.auth import get_user_model
+            User = get_user_model()
+            users_data = [
+                {'username': 'superadmin', 'email': 'admin@propconnect.in',
+                 'password': 'Admin@1234', 'first_name': 'Super', 'last_name': 'Admin',
+                 'phone': '9000000001', 'role': 'seller', 'is_staff': True,
+                 'is_superuser': True, 'is_phone_verified': True},
+                {'username': 'seller_ravi', 'email': 'ravi.seller@propconnect.in',
+                 'password': 'Seller@1234', 'first_name': 'Ravi', 'last_name': 'Kulkarni',
+                 'phone': '9000000002', 'role': 'seller', 'is_phone_verified': True},
+                {'username': 'advocate_priya', 'email': 'priya.advocate@propconnect.in',
+                 'password': 'Advocate@1234', 'first_name': 'Priya', 'last_name': 'Desai',
+                 'phone': '9000000003', 'role': 'advocate', 'is_phone_verified': True},
+                {'username': 'buyer_amit', 'email': 'amit.buyer@propconnect.in',
+                 'password': 'Buyer@1234', 'first_name': 'Amit', 'last_name': 'Patil',
+                 'phone': '9000000004', 'role': 'buyer', 'is_phone_verified': True},
+            ]
+            created = []
+            for ud in users_data:
+                pw = ud.pop('password')
+                if User.objects.filter(username=ud['username']).exists():
+                    created.append(f"SKIP {ud['username']}")
+                    continue
+                u = User(**ud)
+                u.set_password(pw)
+                u.save()
+                created.append(f"OK {ud['username']}")
+            return _json_response(start_response, '200 OK', {'users': created})
+        except Exception:
+            return _json_response(start_response, '500 Internal Server Error', {
+                'detail': traceback.format_exc()
+            })
+
     if _startup_error:
         return _json_response(start_response, '500 Internal Server Error', {
             'error': 'Django failed to start',
