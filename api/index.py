@@ -99,6 +99,30 @@ def app(environ, start_response):
                 'detail': traceback.format_exc()
             })
 
+    # Fix user emails to match seed data
+    if path == '/api/fix-emails':
+        try:
+            from django.db import connection
+            fixes = [
+                ("superadmin", "admin@propconnect.in"),
+                ("seller_ravi", "ravi.seller@propconnect.in"),
+                ("advocate_priya", "priya.advocate@propconnect.in"),
+                ("buyer_amit", "amit.buyer@propconnect.in"),
+            ]
+            results = []
+            with connection.cursor() as cursor:
+                for uname, email in fixes:
+                    cursor.execute(
+                        "UPDATE users SET email = %s WHERE username = %s",
+                        [email, uname]
+                    )
+                    results.append(f"{uname} -> {email} ({cursor.rowcount})")
+            return _json_response(start_response, '200 OK', {'results': results})
+        except Exception:
+            return _json_response(start_response, '500 Internal Server Error', {
+                'detail': traceback.format_exc()
+            })
+
     if _startup_error:
         return _json_response(start_response, '500 Internal Server Error', {
             'error': 'Django failed to start',
