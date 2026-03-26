@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd frontend && npm ci && npm run build && cd ../backend && python manage.py collectstatic --noinput --settings=config.settings.vercel",
+  "buildCommand": "cd frontend && npm ci --legacy-peer-deps && npm run build && cd ../backend && python manage.py collectstatic --noinput --settings=config.settings.vercel",
   "outputDirectory": "frontend/dist",
   "functions": {
     "api/index.py": {
