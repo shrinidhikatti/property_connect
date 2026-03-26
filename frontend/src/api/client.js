@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-// In dev, Vite proxies /api → localhost:8000 (no env var needed)
-// In production (Vercel), set VITE_API_URL=https://your-backend.com/api/v1
+// In dev, Vite proxies /api → localhost:8000
+// On Vercel, /api/v1/* is routed to Django serverless — same domain, no CORS
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '/api/v1',
   headers: { 'Content-Type': 'application/json' },

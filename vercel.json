@@ -1,7 +1,14 @@
 {
-  "buildCommand": "cd frontend && npm install && npm run build",
+  "buildCommand": "cd frontend && npm ci && npm run build && cd ../backend && python manage.py collectstatic --noinput --settings=config.settings.vercel",
   "outputDirectory": "frontend/dist",
+  "functions": {
+    "api/index.py": {
+      "runtime": "python3.12",
+      "maxDuration": 30
+    }
+  },
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/api/v1/:path*", "destination": "/api/index.py" },
+    { "source": "/(.*)",           "destination": "/index.html" }
   ]
 }
