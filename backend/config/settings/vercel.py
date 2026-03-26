@@ -24,7 +24,8 @@ DATABASES = {
 
 # ── Static files via WhiteNoise ───────────────────────────────────────────────
 MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+WHITENOISE_AUTOREFRESH = True  # serve without collectstatic
 
 # ── CORS — allow everything during testing ────────────────────────────────────
 CORS_ALLOW_ALL_ORIGINS = True
