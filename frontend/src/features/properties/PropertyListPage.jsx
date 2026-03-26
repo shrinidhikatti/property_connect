@@ -13,12 +13,13 @@ export function PropertyListPage() {
   })
   const [applied, setApplied] = useState({})
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['properties', applied],
     queryFn: () => propertiesApi.list(applied).then((r) => r.data),
   })
 
-  const properties = data?.results || data || []
+  const raw = data?.results ?? data
+  const properties = Array.isArray(raw) ? raw : []
 
   const apply = () => {
     const clean = Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== ''))
@@ -56,7 +57,12 @@ export function PropertyListPage() {
       </div>
 
       {/* Results */}
-      {isLoading ? (
+      {isError ? (
+        <div className="text-center py-16 text-gray-500">
+          <p className="text-lg font-medium">Unable to load properties.</p>
+          <p className="text-sm mt-1">The server may be starting up — please try again in a moment.</p>
+        </div>
+      ) : isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {[...Array(6)].map((_, i) => (
             <div key={i} className="h-64 bg-gray-100 rounded-2xl animate-pulse" />
