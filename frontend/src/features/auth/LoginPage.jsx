@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -16,17 +17,21 @@ export function LoginPage() {
   const navigate = useNavigate()
   const login = useAuthStore((s) => s.login)
   const addToast = useToastStore((s) => s.add)
+  const [apiError, setApiError] = useState(null)
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
     resolver: zodResolver(schema),
   })
 
   const onSubmit = async (data) => {
+    setApiError(null)
     try {
       await login(data)
-      navigate('/')
+      navigate('/properties')
     } catch (err) {
-      addToast(err.response?.data?.message || 'Login failed', 'error')
+      const msg = err.response?.data?.message || err.response?.data?.detail || 'Login failed. Check your credentials.'
+      setApiError(msg)
+      addToast(msg, 'error')
     }
   }
 
@@ -39,6 +44,11 @@ export function LoginPage() {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+          {apiError && (
+            <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3">
+              {apiError}
+            </div>
+          )}
           <Input
             label="Email or Mobile Number"
             type="text"

@@ -252,7 +252,7 @@ class Command(BaseCommand):
         for data in PROPERTIES:
             prop = Property.objects.create(
                 owner=seller,
-                status='draft',
+                status='approved',
                 **data,
             )
             t = data['property_type']
