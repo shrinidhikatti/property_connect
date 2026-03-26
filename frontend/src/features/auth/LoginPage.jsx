@@ -13,15 +13,26 @@ const schema = z.object({
   password: z.string().min(1, 'Password is required'),
 })
 
+const TEST_ACCOUNTS = [
+  { label: 'Seller', username: 'seller_ravi', password: 'Seller@1234' },
+  { label: 'Buyer', username: 'buyer_amit', password: 'Buyer@1234' },
+  { label: 'Advocate', username: 'advocate_priya', password: 'Advocate@1234' },
+]
+
 export function LoginPage() {
   const navigate = useNavigate()
   const login = useAuthStore((s) => s.login)
   const addToast = useToastStore((s) => s.add)
   const [apiError, setApiError] = useState(null)
 
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
+  const { register, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm({
     resolver: zodResolver(schema),
   })
+
+  const fillTestAccount = (acc) => {
+    setValue('username', acc.username)
+    setValue('password', acc.password)
+  }
 
   const onSubmit = async (data) => {
     setApiError(null)
@@ -74,6 +85,27 @@ export function LoginPage() {
             Register
           </Link>
         </p>
+
+        {/* Test accounts — quick fill */}
+        <div className="mt-6 border-t border-gray-100 pt-4">
+          <p className="text-xs text-gray-400 text-center mb-3">Test Accounts (tap to fill)</p>
+          <div className="flex flex-col gap-2">
+            {TEST_ACCOUNTS.map((acc) => (
+              <button
+                key={acc.username}
+                type="button"
+                onClick={() => fillTestAccount(acc)}
+                className="flex items-center justify-between text-left w-full px-3 py-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+              >
+                <div>
+                  <span className="text-sm font-medium text-gray-700">{acc.label}</span>
+                  <span className="text-xs text-gray-400 ml-2">{acc.username}</span>
+                </div>
+                <span className="text-xs text-gray-400 font-mono">{acc.password}</span>
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   )
