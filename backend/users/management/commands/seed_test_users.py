@@ -6,7 +6,7 @@ User = get_user_model()
 USERS = [
     {
         'username': 'superadmin',
-        'email': 'admin@propconnect.local',
+        'email': 'admin@propconnect.in',
         'password': 'Admin@1234',
         'first_name': 'Super',
         'last_name': 'Admin',
@@ -19,7 +19,7 @@ USERS = [
     },
     {
         'username': 'seller_ravi',
-        'email': 'ravi.seller@propconnect.local',
+        'email': 'ravi.seller@propconnect.in',
         'password': 'Seller@1234',
         'first_name': 'Ravi',
         'last_name': 'Kulkarni',
@@ -32,7 +32,7 @@ USERS = [
     },
     {
         'username': 'advocate_priya',
-        'email': 'priya.advocate@propconnect.local',
+        'email': 'priya.advocate@propconnect.in',
         'password': 'Advocate@1234',
         'first_name': 'Priya',
         'last_name': 'Desai',
@@ -45,7 +45,7 @@ USERS = [
     },
     {
         'username': 'buyer_amit',
-        'email': 'amit.buyer@propconnect.local',
+        'email': 'amit.buyer@propconnect.in',
         'password': 'Buyer@1234',
         'first_name': 'Amit',
         'last_name': 'Patil',
@@ -100,10 +100,10 @@ class Command(BaseCommand):
         self.stdout.write('')
         self.stdout.write('  Role       Username          Password       Email')
         self.stdout.write('  ─────────  ────────────────  ─────────────  ──────────────────────────────')
-        self.stdout.write('  Superadmin superadmin        Admin@1234     admin@propconnect.local')
-        self.stdout.write('  Seller     seller_ravi       Seller@1234    ravi.seller@propconnect.local')
-        self.stdout.write('  Advocate   advocate_priya    Advocate@1234  priya.advocate@propconnect.local')
-        self.stdout.write('  Buyer      buyer_amit        Buyer@1234     amit.buyer@propconnect.local')
+        self.stdout.write('  Superadmin superadmin        Admin@1234     admin@propconnect.in')
+        self.stdout.write('  Seller     seller_ravi       Seller@1234    ravi.seller@propconnect.in')
+        self.stdout.write('  Advocate   advocate_priya    Advocate@1234  priya.advocate@propconnect.in')
+        self.stdout.write('  Buyer      buyer_amit        Buyer@1234     amit.buyer@propconnect.in')
         self.stdout.write('')
         self.stdout.write('  Django admin: http://127.0.0.1:8000/admin/')
         self.stdout.write('  API docs:     http://127.0.0.1:8000/api/docs/')
