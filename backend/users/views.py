@@ -25,7 +25,7 @@ OTP_MAX_RESENDS = 3    # per hour
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
-    throttle_classes = [AuthRateThrottle]
+    throttle_classes = []
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -41,12 +41,11 @@ class RegisterView(generics.CreateAPIView):
 
 class LoginView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
-    throttle_classes = [AuthRateThrottle]
+    throttle_classes = []
 
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
-@throttle_classes([AuthRateThrottle])
 def otp_send(request):
     """Generate OTP and store in Redis; in production SMS via MSG91/Twilio."""
     serializer = OTPSendSerializer(data=request.data)
