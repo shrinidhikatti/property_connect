@@ -1,22 +1,29 @@
-"""
-Vercel Python serverless entry point.
-Routes all /api/v1/* requests to the Django WSGI app.
-"""
 import sys
 import os
+import json
+import traceback
 
-# Add backend/ to the Python path so Django can find its modules
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'backend'))
-
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.vercel')
 
-from django.core.wsgi import get_wsgi_application
-
-# Run migrations on cold start (safe — migrate is idempotent)
-from django.core.management import call_command
 try:
-    call_command('migrate', '--run-syncdb', verbosity=0)
+    from django.core.wsgi import get_wsgi_application
+    _django_app = get_wsgi_application()
+    _startup_error = None
 except Exception:
-    pass  # DB not yet available — will retry on next request
+    _django_app = None
+    _startup_error = traceback.format_exc()
 
-app = get_wsgi_application()
+
+def app(environ, start_response):
+    if _startup_error:
+        body = json.dumps({
+            'error': 'Django failed to start',
+            'detail': _startup_error,
+        }).encode()
+        start_response('500 Internal Server Error', [
+            ('Content-Type', 'application/json'),
+            ('Content-Length', str(len(body))),
+        ])
+        return [body]
+    return _django_app(environ, start_response)
