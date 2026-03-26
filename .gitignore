@@ -11,6 +11,14 @@ backend/media/
 # Node
 frontend/node_modules/
 frontend/dist/
+frontend/.env.local
+frontend/.env.*.local
+
+# Playwright
+frontend/e2e/
+frontend/test-results/
+frontend/playwright-report/
+frontend/playwright.config.js
 
 # OS
 .DS_Store
